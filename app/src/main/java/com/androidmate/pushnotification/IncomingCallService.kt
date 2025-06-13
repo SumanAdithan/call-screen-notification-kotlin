@@ -1,11 +1,17 @@
 package com.androidmate.pushnotification
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Person
 import android.app.Service
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.IBinder
+import android.util.Log
 
 class IncomingCallService : Service() {
 
@@ -13,13 +19,22 @@ class IncomingCallService : Service() {
         val callerName = intent?.getStringExtra("CALLER_NAME") ?: "Incoming Call"
 
         // ✅ Create the channel
-        val channelId = "call_channel_2025"
+        val channelId = "call_channel_${System.currentTimeMillis()}"
+        val soundUri = Uri.parse("android.resource://${packageName}/raw/custom_ringtone")
+
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
         val channel = NotificationChannel(
             channelId,
-            "Incoming Calls",
+            "Incoming Call Channel ",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "Channel for incoming call notifications"
+            setSound(soundUri, attributes) // ✅ Set custom sound
+            enableVibration(true)
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
 
@@ -61,3 +76,4 @@ class IncomingCallService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 }
+
