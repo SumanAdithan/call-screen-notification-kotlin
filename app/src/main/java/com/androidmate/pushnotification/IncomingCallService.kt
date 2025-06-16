@@ -42,15 +42,16 @@ class IncomingCallService : Service() {
         manager.createNotificationChannel(channel)
 
         // ✅ Your notification code continues...
-        val acceptIntent = Intent(this, MainActivity::class.java).apply {
+        val acceptIntent = Intent(this, CallActionReceiver::class.java).apply {
             putExtra("ACTION_TYPE", "ACCEPT")
         }
-        val acceptPendingIntent = PendingIntent.getActivity(this, 1, acceptIntent, PendingIntent.FLAG_IMMUTABLE)
+        val acceptPendingIntent = PendingIntent.getBroadcast(this, 1, acceptIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val rejectIntent = Intent(this, MainActivity::class.java).apply {
+        val rejectIntent = Intent(this, CallActionReceiver::class.java).apply {
             putExtra("ACTION_TYPE", "REJECT")
         }
-        val rejectPendingIntent = PendingIntent.getActivity(this, 2, rejectIntent, PendingIntent.FLAG_IMMUTABLE)
+        val rejectPendingIntent = PendingIntent.getBroadcast(this, 2, rejectIntent, PendingIntent.FLAG_IMMUTABLE)
+
 
         val fullScreenIntent = Intent(this, IncomingCallActivity::class.java)
         fullScreenIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP

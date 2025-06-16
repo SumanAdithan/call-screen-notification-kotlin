@@ -2,6 +2,7 @@ package com.androidmate.pushnotification
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,7 +33,30 @@ class IncomingCallActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_incoming_call)
+
+        val answerButton = findViewById<Button>(R.id.answerButton)
+        val declineButton = findViewById<Button>(R.id.declineButton)
+
+        answerButton.setOnClickListener {
+            Log.d("IncomingCallActivity", "Accepted from UI")
+            handleCallAction("ACCEPT")
+        }
+
+        declineButton.setOnClickListener {
+            Log.d("IncomingCallActivity", "Rejected from UI")
+            handleCallAction("REJECT")
+        }
     }
 
-}
+    private fun handleCallAction(action: String) {
+        // Optional: Do something with the action
+        Log.d("IncomingCallActivity", "Call action: $action")
 
+        // ✅ Stop the service and finish the activity
+        val stopIntent = Intent(this, IncomingCallService::class.java)
+        stopService(stopIntent)
+
+        // Close the UI
+        finish()
+    }
+}
